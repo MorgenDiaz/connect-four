@@ -1,0 +1,27 @@
+{
+  "name": "connect-four",
+  "version": "1.0.0",
+  "description": "A tic-tac-toe-like two-player game in which players alternately place pieces on a vertical board 7 columns across and 6 rows high.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MorgenDiaz/connect-four.git"
+  },
+  "keywords": [
+    "javascript",
+    "connect",
+    "four",
+    "fullstack",
+    "cal",
+    "poly"
+  ],
+  "author": "Morgen Diaz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MorgenDiaz/connect-four/issues"
+  },
+  "homepage": "https://github.com/MorgenDiaz/connect-four#readme"
+}
