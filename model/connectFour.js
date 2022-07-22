@@ -1,3 +1,3 @@
-export function testy() {
-  alert("yaaay.");
+export default function testy() {
+  return "yay";
 }
