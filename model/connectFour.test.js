@@ -1,4 +1,4 @@
-import ConnectFour from "./connectFour";
+import { Slot, Board } from "./connectFour";
 
 const emptyChip = "empty";
 const redChip = "red";
@@ -29,18 +29,36 @@ const boardWithFourMatchingChipsVertically = [
   [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
 ];
 
-let connectFour = new ConnectFour();
+const boardWithFourMatchingChipsDiagonallyRight = [
+  [emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip],
+  [emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip],
+  [emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, redChip, emptyChip],
+  [emptyChip, emptyChip, emptyChip, emptyChip, redChip, emptyChip, emptyChip],
+  [emptyChip, emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip],
+  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
+];
+
+const boardWithFourMatchingChipsDiagonallyLeft = [
+  [emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip],
+  [redChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip],
+  [emptyChip, redChip, emptyChip, emptyChip, emptyChip, redChip, emptyChip],
+  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
+  [emptyChip, emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip],
+  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
+];
+
+let connectFourBoard = new Board();
 
 beforeEach(() => {
-  connectFour = new ConnectFour(4);
+  connectFourBoard = new Board(4);
 });
 
 test("createBoard returns an array", () => {
-  expect(Array.isArray(connectFour.createBoard())).toBe(true);
+  expect(Array.isArray(connectFourBoard.createBoard())).toBe(true);
 });
 
 test("createBoard creates array with 6 rows", () => {
-  let board = connectFour.createBoard();
+  let board = connectFourBoard.createBoard();
 
   expect(board.length).toBe(6);
 
@@ -50,14 +68,14 @@ test("createBoard creates array with 6 rows", () => {
 });
 
 test("createBoard rows have 7 columns", () => {
-  let board = connectFour.createBoard();
+  let board = connectFourBoard.createBoard();
   for (let row of board) {
     expect(row.length).toBe(7);
   }
 });
 
 test("createBoard initializes all cells to empty", () => {
-  let board = connectFour.createBoard();
+  let board = connectFourBoard.createBoard();
   for (let row of board) {
     for (let column of row) {
       expect(column).toBe("empty");
@@ -66,30 +84,46 @@ test("createBoard initializes all cells to empty", () => {
 });
 
 test("chipCompletesChain should return false if the board is undefined", () => {
-  connectFour.board = undefined;
+  connectFourBoard.board = undefined;
   const chip = { row: 0, col: 0, name: "test" };
-  expect(connectFour.chipCompletesChain(chip)).toBe(false);
+  expect(connectFourBoard.chipCompletesChain(chip)).toBe(false);
 });
 
 test("chipCompletesChain should return false if the board is not an array", () => {
-  connectFour.board = 88;
+  connectFourBoard.board = 88;
   const chip = { row: 0, col: 0, name: "test" };
-  expect(connectFour.chipCompletesChain(chip)).toBe(false);
+  expect(connectFourBoard.chipCompletesChain(chip)).toBe(false);
 });
 
 test("chipCompletesChain should return false if the board has no chips", () => {
   const chip = { row: 0, col: 0, name: "test" };
-  expect(connectFour.chipCompletesChain(chip)).toBe(false);
+  expect(connectFourBoard.chipCompletesChain(new Slot(), chip)).toBe(false);
 });
 
 test("chipCompletesChain should return true if the board has a completed chain horizontally", () => {
-  connectFour.board = boardWithFourMatchingChipsHorizontally;
-  const chip = { row: 5, col: 2, name: redChip };
-  expect(connectFour.chipCompletesChain(chip)).toBe(true);
+  connectFourBoard.board = boardWithFourMatchingChipsHorizontally;
+  const slot = new Slot(5, 2);
+  const chip = { name: redChip };
+  expect(connectFourBoard.chipCompletesChain(slot, chip)).toBe(true);
 });
 
 test("chipCompletesChain should return true if the board has a completed chain vertically", () => {
-  connectFour.board = boardWithFourMatchingChipsVertically;
-  const chip = { row: 2, col: 2, name: redChip };
-  expect(connectFour.chipCompletesChain(chip)).toBe(true);
+  connectFourBoard.board = boardWithFourMatchingChipsVertically;
+  const slot = new Slot(2, 2);
+  const chip = { name: redChip };
+  expect(connectFourBoard.chipCompletesChain(slot, chip)).toBe(true);
+});
+
+test("chipCompletesChain should return true if the board has a completed chain diagonally right", () => {
+  connectFourBoard.board = boardWithFourMatchingChipsDiagonallyRight;
+  const slot = new Slot(2, 5);
+  const chip = { name: redChip };
+  expect(connectFourBoard.chipCompletesChain(slot, chip)).toBe(true);
+});
+
+test("chipCompletesChain should return true if the board has a completed chain diagonally left", () => {
+  connectFourBoard.board = boardWithFourMatchingChipsDiagonallyLeft;
+  const slot = new Slot(2, 1);
+  const chip = { name: redChip };
+  expect(connectFourBoard.chipCompletesChain(slot, chip)).toBe(true);
 });
