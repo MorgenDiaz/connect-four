@@ -46,6 +46,7 @@ class Slot {
 }
 class Board {
   constructor(winningChainCount = 4) {
+    this.nextAvailableSlotCache = {};
     this.board = this.createBoard();
     this.winningChainCount;
     this.winningChainCount = winningChainCount;
@@ -63,7 +64,16 @@ class Board {
       board.push(row);
     }
 
+    this.createNextAvailableSlotCache();
     return board;
+  }
+
+  createNextAvailableSlotCache() {
+    this.nextAvailableSlotCache = {};
+
+    for (let i = 0; i < 7; i++) {
+      this.nextAvailableSlotCache[i] = 0;
+    }
   }
 
   slotExistsInBoard(slot) {
@@ -236,6 +246,21 @@ class Board {
       this.chipCompletesWinningChainDiagonallyRight(slot, chip.name) ||
       this.chipCompletesWinningChainDiagonallyLeft(slot, chip.name)
     );
+  }
+
+  nextAvailableRowForColumn(col) {
+    return this.nextAvailableSlotCache[col];
+  }
+
+  canAddChipToColumn(col) {
+    return this.nextAvailableRowForColumn(col) !== -1;
+  }
+
+  addChipToColumn(col, chip) {
+    if (this.canAddChipToColumn(col)) {
+      this.board[this.nextAvailableRowForColumn(col)][col] = chip;
+      this.nextAvailableSlotCache[col]--;
+    }
   }
 }
 

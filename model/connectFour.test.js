@@ -47,6 +47,21 @@ const boardWithFourMatchingChipsDiagonallyLeft = [
   [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
 ];
 
+const boardWithFullColumn = [
+  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
+  [redChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
+  [emptyChip, redChip, redChip, emptyChip, emptyChip, redChip, emptyChip],
+  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
+  [emptyChip, emptyChip, redChip, redChip, emptyChip, emptyChip, emptyChip],
+  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
+];
+
+function fillColumn(board, col) {
+  for (let i = 0; i < 6; i++) {
+    board.addChipToColumn(col, redChip);
+  }
+}
+
 let connectFourBoard = new Board();
 
 beforeEach(() => {
@@ -126,4 +141,40 @@ test("chipCompletesChain should return true if the board has a completed chain d
   const slot = new Slot(2, 1);
   const chip = { name: redChip };
   expect(connectFourBoard.chipCompletesChain(slot, chip)).toBe(true);
+});
+
+test("canAddChipToColumn returns true if column is not full", () => {
+  expect(connectFourBoard.canAddChipToColumn(0)).toBe(true);
+});
+
+test("canAddChipToColumn returns false if column is full", () => {
+  fillColumn(connectFourBoard, 0);
+  expect(connectFourBoard.canAddChipToColumn(0)).toBe(false);
+});
+
+test("addChipToColumn does not change next available slot if column is full", () => {
+  fillColumn(connectFourBoard, 2);
+  let nextAvailableRowForColumn = connectFourBoard.nextAvailableRowForColumn(2);
+  connectFourBoard.addChipToColumn(2);
+
+  expect(connectFourBoard.nextAvailableRowForColumn(2)).toBe(
+    nextAvailableRowForColumn
+  );
+});
+
+test("addChipToColumn changes next available slot to next row up if column is not full", () => {
+  let nextAvailableRowForColumn = connectFourBoard.nextAvailableRowForColumn(2);
+  connectFourBoard.addChipToColumn(2, redChip);
+
+  expect(connectFourBoard.nextAvailableRowForColumn(2)).toBe(
+    nextAvailableRowForColumn - 1
+  );
+});
+
+test("addChipToColumn changes slot to correct chip if column is not full", () => {
+  let nextAvailableRowForColumn = connectFourBoard.nextAvailableRowForColumn(2);
+  connectFourBoard.addChipToColumn(2, redChip);
+  let slot = new Slot(nextAvailableRowForColumn, 2);
+
+  expect(connectFourBoard.chipAtSlotMatches(slot, redChip)).toBe(true);
 });
