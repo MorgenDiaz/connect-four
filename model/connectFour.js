@@ -48,19 +48,19 @@ class Board {
   constructor(winningChainCount = 4) {
     this.nextAvailableSlotCache = {};
     this.board = this.createBoard();
-    this.winningChainCount;
     this.winningChainCount = winningChainCount;
   }
 
   createBoard() {
     let board = [];
-    let row = [];
-
-    for (let i = 0; i < 7; i++) {
-      row.push("empty");
-    }
 
     for (let i = 0; i < 6; i++) {
+      let row = [];
+
+      for (let i = 0; i < 7; i++) {
+        row.push("empty");
+      }
+
       board.push(row);
     }
 
@@ -72,7 +72,7 @@ class Board {
     this.nextAvailableSlotCache = {};
 
     for (let i = 0; i < 7; i++) {
-      this.nextAvailableSlotCache[i] = 0;
+      this.nextAvailableSlotCache[i] = 5;
     }
   }
 
@@ -89,7 +89,7 @@ class Board {
   }
 
   chipAtSlotMatches(slot, chip) {
-    return this.slotExistsInBoard(slot) && chip == this.chipAtSlot(slot);
+    return this.slotExistsInBoard(slot) && chip === this.chipAtSlot(slot);
   }
 
   countMatchingChipsToRight(startingSlot, chip) {
@@ -122,9 +122,8 @@ class Board {
 
   chipCompletesWinningChainHorizontally(slot, chip) {
     let chain = 1;
-    chain += this.countMatchingChipsToLeft(slot, chip.name);
-    chain += this.countMatchingChipsToRight(slot, chip.name);
-
+    chain += this.countMatchingChipsToLeft(slot, chip);
+    chain += this.countMatchingChipsToRight(slot, chip);
     return chain >= this.winningChainCount;
   }
 
@@ -157,8 +156,8 @@ class Board {
 
   chipCompletesWinningChainVertically(slot, chip) {
     let chain = 1;
-    chain += this.countMatchingChipsAbove(slot, chip.name);
-    chain += this.countMatchingChipsBelow(slot, chip.name);
+    chain += this.countMatchingChipsAbove(slot, chip);
+    chain += this.countMatchingChipsBelow(slot, chip);
 
     return chain >= this.winningChainCount;
   }
@@ -229,6 +228,7 @@ class Board {
 
   chipCompletesWinningChainDiagonallyLeft(slot, chip) {
     let chain = 1;
+
     chain += this.countMatchingChipsAboveLeft(slot, chip);
     chain += this.countMatchingChipsBelowRight(slot, chip);
 
@@ -243,8 +243,8 @@ class Board {
     return (
       this.chipCompletesWinningChainHorizontally(slot, chip) ||
       this.chipCompletesWinningChainVertically(slot, chip) ||
-      this.chipCompletesWinningChainDiagonallyRight(slot, chip.name) ||
-      this.chipCompletesWinningChainDiagonallyLeft(slot, chip.name)
+      this.chipCompletesWinningChainDiagonallyRight(slot, chip) ||
+      this.chipCompletesWinningChainDiagonallyLeft(slot, chip)
     );
   }
 
@@ -264,4 +264,46 @@ class Board {
   }
 }
 
-export { Board, Slot };
+class ConnectFour {
+  constructor() {
+    this.eventListener = null;
+    this.board = null;
+    this.player1 = null;
+    this.player2 = null;
+    this.currentPlayer = null;
+    this.test = 0;
+  }
+
+  registerEventListener(listener) {
+    this.eventListener = listener;
+  }
+
+  startGame(connectToWin, player1, player2) {
+    this.board = new Board(connectToWin);
+    this.player1 = player1;
+    this.player2 = player2;
+    this.currentPlayer = player1;
+  }
+
+  canAddChipToColumn(col) {
+    return this.board.canAddChipToColumn(col, this.currentPlayer.name);
+  }
+
+  nextAvailableRowForColumn(col) {
+    return this.board.nextAvailableRowForColumn(col);
+  }
+
+  addChipToColumn(col) {
+    const row = this.nextAvailableRowForColumn(col);
+    const targetSlot = new Slot(row, col);
+
+    if (this.board.chipCompletesChain(targetSlot, this.currentPlayer.name)) {
+      this.eventListener.onPlayerWon();
+      return;
+    }
+
+    this.board.addChipToColumn(col, this.currentPlayer.name);
+  }
+}
+
+export { ConnectFour, Board, Slot };
