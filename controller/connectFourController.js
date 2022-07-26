@@ -34,6 +34,11 @@ class ConnectFourController {
 
   onPlayerWon() {
     alert("Victory!!!");
+    this.model.startGame(
+      this.connectToWin,
+      { name: "morgen", color: "blue" },
+      { name: "goku", color: "black" }
+    );
   }
 }
 

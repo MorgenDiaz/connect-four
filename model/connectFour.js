@@ -281,7 +281,6 @@ class ConnectFour {
     this.player1 = null;
     this.player2 = null;
     this.currentPlayer = null;
-    this.test = 0;
   }
 
   registerEventListener(listener) {
@@ -292,7 +291,17 @@ class ConnectFour {
     this.board = new Board(connectToWin);
     this.player1 = player1;
     this.player2 = player2;
-    this.currentPlayer = player1;
+    this.currentPlayer = this.selectRandomPlayer();
+  }
+
+  selectRandomPlayer() {
+    let random = Math.random();
+
+    if (random < 0.5) {
+      return this.player1;
+    }
+
+    return this.player2;
   }
 
   switchCurrentPlayer() {
