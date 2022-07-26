@@ -20,10 +20,16 @@ class ConnectFourController {
     col = Number(col);
     if (this.model.canAddChipToColumn(col)) {
       let row = this.model.nextAvailableRowForColumn(col);
+      this.view.deleteChipHint();
       this.view.addChipToCell(row, col, this.model.currentPlayer.color);
       this.model.addChipToColumn(col);
-      this.view.deleteChipHint();
     }
+  }
+
+  onPlayerTurnEnded() {}
+
+  onPlayerStalemate() {
+    alert("Tie! Game over!");
   }
 
   onPlayerWon() {

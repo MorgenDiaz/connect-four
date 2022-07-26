@@ -45,6 +45,11 @@ class Slot {
   }
 }
 class Board {
+  #boardRows = 6;
+  #boardCols = 7;
+  #totalCells = this.#boardRows * this.#boardCols;
+  #usedCells = 0;
+
   constructor(winningChainCount = 4) {
     this.nextAvailableSlotCache = {};
     this.board = this.createBoard();
@@ -54,10 +59,10 @@ class Board {
   createBoard() {
     let board = [];
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < this.#boardRows; i++) {
       let row = [];
 
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < this.#boardCols; i++) {
         row.push("empty");
       }
 
@@ -71,9 +76,13 @@ class Board {
   createNextAvailableSlotCache() {
     this.nextAvailableSlotCache = {};
 
-    for (let i = 0; i < 7; i++) {
-      this.nextAvailableSlotCache[i] = 5;
+    for (let i = 0; i < this.#boardCols; i++) {
+      this.nextAvailableSlotCache[i] = this.#boardRows - 1;
     }
+  }
+
+  isBoardFull() {
+    return this.#totalCells - this.#usedCells == 0;
   }
 
   slotExistsInBoard(slot) {
@@ -260,6 +269,7 @@ class Board {
     if (this.canAddChipToColumn(col)) {
       this.board[this.nextAvailableRowForColumn(col)][col] = chip;
       this.nextAvailableSlotCache[col]--;
+      this.#usedCells++;
     }
   }
 }
@@ -285,6 +295,17 @@ class ConnectFour {
     this.currentPlayer = player1;
   }
 
+  switchCurrentPlayer() {
+    switch (this.currentPlayer) {
+      case this.player1:
+        this.currentPlayer = this.player2;
+        break;
+      case this.player2:
+        this.currentPlayer = this.player1;
+        break;
+    }
+  }
+
   canAddChipToColumn(col) {
     return this.board.canAddChipToColumn(col, this.currentPlayer.name);
   }
@@ -303,6 +324,14 @@ class ConnectFour {
     }
 
     this.board.addChipToColumn(col, this.currentPlayer.name);
+
+    if (this.board.isBoardFull()) {
+      this.eventListener.onPlayerStalemate();
+      return;
+    }
+
+    this.switchCurrentPlayer();
+    this.eventListener.onPlayerTurnEnded();
   }
 }
 
