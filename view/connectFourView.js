@@ -3,9 +3,26 @@ class ConnectFourView {
     this.controller = null;
     this.MAIN = document.querySelector("main");
     this.BOARD = document.querySelector("#board");
+    this.generateBoard(6, 7);
     this.BOARD_COLUMNS = document.querySelectorAll(".col");
     this.CHIP_HINT = null;
     this.registerEventListeners();
+  }
+
+  generateBoard(rows, cols) {
+    for (let c = 0; c < cols; c++) {
+      const columnElement = document.createElement("div");
+      columnElement.id = c;
+      columnElement.className = "col";
+
+      for (let r = 0; r < rows; r++) {
+        const cellElement = document.createElement("div");
+        cellElement.className = "cell";
+        columnElement.appendChild(cellElement);
+      }
+
+      this.BOARD.appendChild(columnElement);
+    }
   }
 
   registerController(controller) {
