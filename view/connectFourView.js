@@ -1,40 +1,22 @@
+import BoardElement from "./board.js";
 class ConnectFourView {
   constructor() {
     this.controller = null;
     this.MAIN = document.querySelector("main");
-    this.BOARD = document.querySelector("#board");
-    this.generateBoard(6, 7);
-    this.BOARD_COLUMNS = document.querySelectorAll(".col");
+    this.boardElement = new BoardElement();
+
+    this.boardElement.generateBoard(
+      6,
+      7,
+      this.onBoardColumnHovered.bind(this),
+      this.onBoardColumnClicked.bind(this)
+    );
+
     this.CHIP_HINT = null;
-    this.registerEventListeners();
-  }
-
-  generateBoard(rows, cols) {
-    for (let c = 0; c < cols; c++) {
-      const columnElement = document.createElement("div");
-      columnElement.id = c;
-      columnElement.className = "col";
-
-      for (let r = 0; r < rows; r++) {
-        const cellElement = document.createElement("div");
-        cellElement.className = "cell";
-        columnElement.appendChild(cellElement);
-      }
-
-      this.BOARD.appendChild(columnElement);
-    }
   }
 
   registerController(controller) {
     this.controller = controller;
-  }
-
-  filterForColumnElement(element) {
-    if (element.classList.contains("col")) {
-      return element;
-    } else if (element.classList.contains("cell")) {
-      return element.parentElement;
-    }
   }
 
   updateChipHintPosition(rect) {
@@ -45,7 +27,7 @@ class ConnectFourView {
   }
 
   showChipHintAboveColumn(col, color) {
-    let rect = this.BOARD_COLUMNS[col].getBoundingClientRect();
+    let rect = this.boardElement.getColumnPosition(col);
 
     if (!this.CHIP_HINT) {
       this.CHIP_HINT = this.createChip(color);
@@ -60,20 +42,16 @@ class ConnectFourView {
     this.CHIP_HINT = null;
   }
 
-  onBoardHovered(event) {
-    let hoveredColumn = this.filterForColumnElement(event.target);
+  onBoardColumnHovered(event) {
+    let hoveredColumn = event.currentTarget;
 
-    if (hoveredColumn) {
-      this.controller.onUserFocusColumn(hoveredColumn.id);
-    }
+    this.controller.onUserFocusColumn(hoveredColumn.id);
   }
 
-  onBoardClicked(event) {
-    let clickedColumn = this.filterForColumnElement(event.target);
+  onBoardColumnClicked(event) {
+    let clickedColumn = event.currentTarget;
 
-    if (clickedColumn) {
-      this.controller.onUserAddChipToColumn(clickedColumn.id);
-    }
+    this.controller.onUserAddChipToColumn(clickedColumn.id);
   }
 
   createChip(color) {
@@ -84,14 +62,7 @@ class ConnectFourView {
 
   addChipToCell(row, col, color) {
     let chip = this.createChip(color);
-    let cellsInColumn = this.BOARD_COLUMNS[col].querySelectorAll(".cell");
-
-    cellsInColumn[row].appendChild(chip);
-  }
-
-  registerEventListeners() {
-    this.BOARD.addEventListener("click", this.onBoardClicked.bind(this));
-    this.BOARD.addEventListener("mouseover", this.onBoardHovered.bind(this));
+    this.boardElement.addChipToCell(row, col, chip);
   }
 }
 
