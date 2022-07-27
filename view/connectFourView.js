@@ -1,8 +1,11 @@
 import BoardElement from "./board.js";
+import ChipElement from "./chip.js";
 class ConnectFourView {
+  #controller = null;
+  #main = null;
+  #chipHint = null;
   constructor() {
-    this.controller = null;
-    this.MAIN = document.querySelector("main");
+    this.#main = document.querySelector("main");
     this.boardElement = new BoardElement();
 
     this.boardElement.generateBoard(
@@ -11,58 +14,49 @@ class ConnectFourView {
       this.onBoardColumnHovered.bind(this),
       this.onBoardColumnClicked.bind(this)
     );
-
-    this.CHIP_HINT = null;
   }
 
   registerController(controller) {
     this.controller = controller;
   }
 
-  updateChipHintPosition(rect) {
-    this.CHIP_HINT.style.position = "absolute";
+  calculateChipHintPosition(rect) {
     //split the dif between cell size and chip size to center
-    this.CHIP_HINT.style.left = rect.x + 10 + "px";
-    this.CHIP_HINT.style.top = rect.top - 100 + "px";
+    return {
+      top: rect.top - 100 + "px",
+      left: rect.x + 10 + "px",
+    };
   }
 
   showChipHintAboveColumn(col, color) {
-    let rect = this.boardElement.getColumnPosition(col);
+    const rect = this.boardElement.getColumnPosition(col);
 
-    if (!this.CHIP_HINT) {
-      this.CHIP_HINT = this.createChip(color);
-      this.MAIN.appendChild(this.CHIP_HINT);
+    if (!this.#chipHint) {
+      this.#chipHint = new ChipElement(color);
+      this.#main.appendChild(this.#chipHint.node());
     }
 
-    this.updateChipHintPosition(rect);
+    const newPosition = this.calculateChipHintPosition(rect);
+    this.#chipHint.updatePosition(newPosition.top, newPosition.left);
   }
 
   deleteChipHint() {
-    this.MAIN.removeChild(this.CHIP_HINT);
-    this.CHIP_HINT = null;
+    this.#main.removeChild(this.#chipHint.node());
+    this.#chipHint = null;
   }
 
   onBoardColumnHovered(event) {
     let hoveredColumn = event.currentTarget;
-
     this.controller.onUserFocusColumn(hoveredColumn.id);
   }
 
   onBoardColumnClicked(event) {
     let clickedColumn = event.currentTarget;
-
     this.controller.onUserAddChipToColumn(clickedColumn.id);
   }
 
-  createChip(color) {
-    let chip = document.createElement("div");
-    chip.classList.add("chip", color);
-    return chip;
-  }
-
   addChipToCell(row, col, color) {
-    let chip = this.createChip(color);
-    this.boardElement.addChipToCell(row, col, chip);
+    this.boardElement.addChipToCell(row, col, new ChipElement(color).node());
   }
 }
 
