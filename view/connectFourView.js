@@ -1,23 +1,32 @@
+import GameSetupControlsElement from "./gameSetupControls.js";
 import BoardElement from "./board.js";
 import ChipElement from "./chip.js";
 class ConnectFourView {
   #controller = null;
+  #setupControls = null;
   #main = null;
+  #board = null;
   #chipHint = null;
-  constructor() {
-    this.#main = document.querySelector("main");
-    this.boardElement = new BoardElement();
 
-    this.boardElement.generateBoard(
+  constructor() {
+    this.#setupControls = new GameSetupControlsElement(
+      this.onStartGameButtonClicked.bind(this)
+    );
+    this.#main = document.querySelector("main");
+    this.#board = new BoardElement();
+  }
+
+  registerController(controller) {
+    this.#controller = controller;
+  }
+
+  startGame() {
+    this.#board.generateBoard(
       6,
       7,
       this.onBoardColumnHovered.bind(this),
       this.onBoardColumnClicked.bind(this)
     );
-  }
-
-  registerController(controller) {
-    this.controller = controller;
   }
 
   calculateChipHintPosition(rect) {
@@ -29,7 +38,7 @@ class ConnectFourView {
   }
 
   showChipHintAboveColumn(col, color) {
-    const rect = this.boardElement.getColumnPosition(col);
+    const rect = this.#board.getColumnPosition(col);
 
     if (!this.#chipHint) {
       this.#chipHint = new ChipElement(color);
@@ -45,18 +54,20 @@ class ConnectFourView {
     this.#chipHint = null;
   }
 
-  onBoardColumnHovered(event) {
-    let hoveredColumn = event.currentTarget;
-    this.controller.onUserFocusColumn(hoveredColumn.id);
+  onStartGameButtonClicked(player1, player2) {
+    this.#controller.onStartGameButtonClicked(player1, player2);
   }
 
-  onBoardColumnClicked(event) {
-    let clickedColumn = event.currentTarget;
-    this.controller.onUserAddChipToColumn(clickedColumn.id);
+  onBoardColumnHovered(col) {
+    this.#controller.onUserFocusColumn(col);
+  }
+
+  onBoardColumnClicked(col) {
+    this.#controller.onUserAddChipToColumn(col);
   }
 
   addChipToCell(row, col, color) {
-    this.boardElement.addChipToCell(row, col, new ChipElement(color).node());
+    this.#board.addChipToCell(row, col, new ChipElement(color).node());
   }
 }
 

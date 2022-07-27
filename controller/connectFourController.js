@@ -5,11 +5,11 @@ class ConnectFourController {
     this.model.registerEventListener(this);
     this.view.registerController(this);
     this.connectToWin = 4;
-    this.model.startGame(
-      this.connectToWin,
-      { name: "morgen", color: "blue" },
-      { name: "goku", color: "black" }
-    );
+  }
+
+  onStartGameButtonClicked(player1, player2) {
+    this.model.startGame(this.connectToWin, player1, player2);
+    this.view.startGame();
   }
 
   onUserFocusColumn(col) {

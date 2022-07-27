@@ -17,8 +17,12 @@ class BoardElement {
         columnElement.appendChild(cellElement);
       }
 
-      columnElement.addEventListener("click", onColumnClicked);
-      columnElement.addEventListener("mouseover", onColumnHovered);
+      columnElement.addEventListener("click", function (event) {
+        onColumnClicked(event.currentTarget.id);
+      });
+      columnElement.addEventListener("mouseover", function (event) {
+        onColumnHovered(event.currentTarget.id);
+      });
 
       this.#columns.push(columnElement);
       this.#board.appendChild(columnElement);
