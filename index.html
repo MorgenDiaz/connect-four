@@ -10,11 +10,14 @@
   <body>
     <header>
       <h1>Connect 4</h1>
-      <div class="setup-controls">
+      <div id="setup_controls">
         <input id="player_1_input" type="text" placeholder="Player 1" />
         <input id="player_2_input" type="text" placeholder="Player 2" />
+        <button id="start_button">Start Game</button>
       </div>
-      <button id="start_button">Start Game</button>
+      <div id="game_status">
+        <h2></h2>
+      </div>
     </header>
     <main>
       <div id="board"></div>

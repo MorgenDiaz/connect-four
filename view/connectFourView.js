@@ -1,9 +1,11 @@
 import GameSetupControlsElement from "./gameSetupControls.js";
+import GameStatusElement from "./gameStatus.js";
 import BoardElement from "./board.js";
 import ChipElement from "./chip.js";
 class ConnectFourView {
   #controller = null;
   #setupControls = null;
+  #gameStatus = null;
   #main = null;
   #board = null;
   #chipHint = null;
@@ -12,6 +14,7 @@ class ConnectFourView {
     this.#setupControls = new GameSetupControlsElement(
       this.onStartGameButtonClicked.bind(this)
     );
+    this.#gameStatus = new GameStatusElement();
     this.#main = document.querySelector("main");
     this.#board = new BoardElement();
   }
@@ -20,13 +23,29 @@ class ConnectFourView {
     this.#controller = controller;
   }
 
-  startGame() {
+  startGame(player) {
+    this.#setupControls.hide();
+    this.#gameStatus.show();
+    this.updateCurrentPlayer(player);
+
     this.#board.generateBoard(
       6,
       7,
       this.onBoardColumnHovered.bind(this),
       this.onBoardColumnClicked.bind(this)
     );
+  }
+
+  updateCurrentPlayer(player) {
+    this.#gameStatus.updateStatusCurrentPlayer(player.name);
+  }
+
+  updateStatusPlayerWon(player) {
+    this.#gameStatus.updateStatusPlayerWon(player.name);
+  }
+
+  updateStatusTie() {
+    this.#gameStatus.updateStatusTie();
   }
 
   calculateChipHintPosition(rect) {

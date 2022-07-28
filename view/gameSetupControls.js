@@ -1,10 +1,12 @@
 class GameSetupControlsElement {
+  #container = null;
   #player1InputText = null;
   #player2InputText = null;
   #startButton = null;
   #onStartGameButtonClicked = null;
 
   constructor(onStartGameButtonClicked) {
+    this.#container = document.querySelector("#setup_controls");
     this.#player1InputText = document.querySelector("#player_1_input");
     this.#player2InputText = document.querySelector("#player_2_input");
     this.#startButton = document.querySelector("#start_button");
@@ -38,6 +40,10 @@ class GameSetupControlsElement {
     };
 
     this.#onStartGameButtonClicked(player1, player2);
+  }
+
+  hide() {
+    this.#container.style.display = "none";
   }
 }
 

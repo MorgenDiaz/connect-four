@@ -9,7 +9,7 @@ class ConnectFourController {
 
   onStartGameButtonClicked(player1, player2) {
     this.model.startGame(this.connectToWin, player1, player2);
-    this.view.startGame();
+    this.view.startGame(this.model.currentPlayer);
   }
 
   onUserFocusColumn(col) {
@@ -26,14 +26,16 @@ class ConnectFourController {
     }
   }
 
-  onPlayerTurnEnded() {}
+  onPlayerTurnEnded() {
+    this.view.updateCurrentPlayer(this.model.currentPlayer);
+  }
 
   onPlayerStalemate() {
-    alert("Tie! Game over!");
+    this.view.updateStatusTie();
   }
 
   onPlayerWon() {
-    alert("Victory!!!");
+    this.view.updateStatusPlayerWon(this.model.currentPlayer);
     this.model.startGame(
       this.connectToWin,
       { name: "morgen", color: "blue" },
