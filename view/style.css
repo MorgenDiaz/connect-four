@@ -23,6 +23,10 @@ main {
   display: none;
 }
 
+#play_again_button {
+  visibility: hidden;
+}
+
 #board {
   display: flex;
 }

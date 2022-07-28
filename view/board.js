@@ -37,6 +37,10 @@ class BoardElement {
     let cellsInColumn = this.#columns[col].querySelectorAll(".cell");
     cellsInColumn[row].appendChild(chip);
   }
+
+  disable() {
+    this.#board.replaceWith(this.#board.cloneNode(true));
+  }
 }
 
 export default BoardElement;

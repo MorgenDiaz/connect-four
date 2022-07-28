@@ -18,6 +18,7 @@ class ConnectFourController {
 
   onUserAddChipToColumn(col) {
     col = Number(col);
+
     if (this.model.canAddChipToColumn(col)) {
       let row = this.model.nextAvailableRowForColumn(col);
       this.view.deleteChipHint();

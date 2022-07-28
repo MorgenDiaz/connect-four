@@ -42,10 +42,12 @@ class ConnectFourView {
 
   updateStatusPlayerWon(player) {
     this.#gameStatus.updateStatusPlayerWon(player.name);
+    this.#board.disable();
   }
 
   updateStatusTie() {
     this.#gameStatus.updateStatusTie();
+    this.#board.disable();
   }
 
   calculateChipHintPosition(rect) {
