@@ -37,11 +37,10 @@ class ConnectFourController {
 
   onPlayerWon() {
     this.view.updateStatusPlayerWon(this.model.currentPlayer);
-    this.model.startGame(
-      this.connectToWin,
-      { name: "morgen", color: "blue" },
-      { name: "goku", color: "black" }
-    );
+  }
+
+  onResetGameButtonClicked() {
+    this.view.reset();
   }
 }
 

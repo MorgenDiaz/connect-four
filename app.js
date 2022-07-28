@@ -1,4 +1,4 @@
-import { ConnectFour } from "./model/connectFour.js";
+import ConnectFour from "./model/connectFour.js";
 import ConnectFourController from "./controller/connectFourController.js";
 import ConnectFourView from "../view/connectFourView.js";
 

@@ -14,7 +14,9 @@ class ConnectFourView {
     this.#setupControls = new GameSetupControlsElement(
       this.onStartGameButtonClicked.bind(this)
     );
-    this.#gameStatus = new GameStatusElement();
+    this.#gameStatus = new GameStatusElement(
+      this.onResetGameButtonClicked.bind(this)
+    );
     this.#main = document.querySelector("main");
     this.#board = new BoardElement();
   }
@@ -34,6 +36,12 @@ class ConnectFourView {
       this.onBoardColumnHovered.bind(this),
       this.onBoardColumnClicked.bind(this)
     );
+  }
+
+  reset() {
+    this.#setupControls.reset();
+    this.#gameStatus.reset();
+    this.#board.reset();
   }
 
   updateCurrentPlayer(player) {
@@ -77,6 +85,10 @@ class ConnectFourView {
 
   onStartGameButtonClicked(player1, player2) {
     this.#controller.onStartGameButtonClicked(player1, player2);
+  }
+
+  onResetGameButtonClicked() {
+    this.#controller.onResetGameButtonClicked();
   }
 
   onBoardColumnHovered(col) {

@@ -17,6 +17,16 @@ class GameSetupControlsElement {
     );
   }
 
+  hide() {
+    this.#container.style.display = "none";
+  }
+
+  reset() {
+    this.#player1InputText.value = "";
+    this.#player2InputText.value = "";
+    this.#container.style.display = "flex";
+  }
+
   startGameButtonClicked() {
     let player1Name = this.#player1InputText.value;
 
@@ -40,10 +50,6 @@ class GameSetupControlsElement {
     };
 
     this.#onStartGameButtonClicked(player1, player2);
-  }
-
-  hide() {
-    this.#container.style.display = "none";
   }
 }
 

@@ -1,4 +1,4 @@
-import { Slot, Board } from "./connectFour";
+import { Slot, Board } from "./connectFourBoard";
 
 const emptyChip = "empty";
 const redChip = "red";

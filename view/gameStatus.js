@@ -3,14 +3,23 @@ class GameStatusElement {
   #currentPlayerText = null;
   #playAgainButton = null;
 
-  constructor() {
+  constructor(onResetButtonClicked) {
     this.#gameStatus = document.querySelector("#game_status");
     this.#currentPlayerText = document.querySelector("#game_status h2");
     this.#playAgainButton = document.querySelector("#play_again_button");
+    this.#playAgainButton.addEventListener("click", onResetButtonClicked);
   }
 
   show() {
     this.#gameStatus.style.display = "flex";
+  }
+
+  hide() {
+    this.#gameStatus.style.display = "none";
+  }
+
+  setStatusText(text) {
+    this.#currentPlayerText.innerText = text;
   }
 
   showPlayAgainButton() {
@@ -18,17 +27,25 @@ class GameStatusElement {
   }
 
   updateStatusCurrentPlayer(playerName) {
-    this.#currentPlayerText.innerText = `${playerName}'s turn!`;
+    this.setStatusText(`${playerName}'s turn!`);
   }
 
   updateStatusPlayerWon(playerName) {
-    this.#currentPlayerText.innerText = `${playerName} Won!`;
+    this.setStatusText(`${playerName} Won!`);
     this.showPlayAgainButton();
   }
 
   updateStatusTie() {
-    this.#currentPlayerText.innerText = `Draw! you have ran out of available space in the board.`;
+    this.setStatusText(
+      `Draw! you have ran out of available space in the board.`
+    );
     this.showPlayAgainButton();
+  }
+
+  reset() {
+    this.setStatusText("");
+    this.#playAgainButton.style.visibility = "hidden";
+    this.hide();
   }
 }
 

@@ -39,7 +39,17 @@ class BoardElement {
   }
 
   disable() {
-    this.#board.replaceWith(this.#board.cloneNode(true));
+    let boardNoEvents = this.#board.cloneNode(true);
+    document.querySelector("#board").replaceWith(boardNoEvents);
+    this.#board = boardNoEvents;
+  }
+
+  reset() {
+    while (this.#board.firstElementChild) {
+      this.#board.removeChild(this.#board.firstElementChild);
+    }
+
+    this.#columns = [];
   }
 }
 
