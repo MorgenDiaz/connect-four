@@ -79,8 +79,10 @@ class ConnectFourView {
   }
 
   deleteChipHint() {
-    this.#main.removeChild(this.#chipHint.node());
-    this.#chipHint = null;
+    if (this.#chipHint) {
+      this.#main.removeChild(this.#chipHint.node());
+      this.#chipHint = null;
+    }
   }
 
   onStartGameButtonClicked(player1, player2) {

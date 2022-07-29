@@ -2,6 +2,7 @@ class GameSetupControlsElement {
   #container = null;
   #player1InputText = null;
   #player2InputText = null;
+  #playComputerCheckbox = null;
   #startButton = null;
   #onStartGameButtonClicked = null;
 
@@ -9,11 +10,16 @@ class GameSetupControlsElement {
     this.#container = document.querySelector("#setup_controls");
     this.#player1InputText = document.querySelector("#player_1_input");
     this.#player2InputText = document.querySelector("#player_2_input");
+    this.#playComputerCheckbox = document.querySelector("#connect_bot");
     this.#startButton = document.querySelector("#start_button");
     this.#onStartGameButtonClicked = onStartGameButtonClicked;
     this.#startButton.addEventListener(
       "click",
       this.startGameButtonClicked.bind(this)
+    );
+    this.#playComputerCheckbox.addEventListener(
+      "change",
+      this.playComputerToggled.bind(this)
     );
   }
 
@@ -50,6 +56,18 @@ class GameSetupControlsElement {
     };
 
     this.#onStartGameButtonClicked(player1, player2);
+  }
+
+  playComputerToggled(event) {
+    const checked = event.currentTarget.checked;
+
+    if (checked) {
+      this.#player2InputText.value = this.#playComputerCheckbox.value;
+      this.#player2InputText.disabled = true;
+    } else {
+      this.#player2InputText.value = "";
+      this.#player2InputText.disabled = false;
+    }
   }
 }
 

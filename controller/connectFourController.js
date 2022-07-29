@@ -5,11 +5,19 @@ class ConnectFourController {
     this.model.registerEventListener(this);
     this.view.registerController(this);
     this.connectToWin = 4;
+    this.isPlayingComputer = false;
   }
 
   onStartGameButtonClicked(player1, player2) {
-    this.model.startGame(this.connectToWin, player1, player2);
-    this.view.startGame(this.model.currentPlayer);
+    if (player2.name === "ConnectBot") {
+      this.isPlayingComputer = true;
+    }
+    this.model.startGame(
+      this.connectToWin,
+      player1,
+      player2,
+      this.isPlayingComputer
+    );
   }
 
   onUserFocusColumn(col) {
@@ -27,8 +35,24 @@ class ConnectFourController {
     }
   }
 
+  onGameStarted() {
+    this.view.startGame(this.model.currentPlayer);
+    if (
+      this.isPlayingComputer &&
+      this.model.currentPlayer === this.model.player2
+    ) {
+      this.onUserAddChipToColumn(this.model.getBotMove());
+    }
+  }
+
   onPlayerTurnEnded() {
     this.view.updateCurrentPlayer(this.model.currentPlayer);
+    if (
+      this.isPlayingComputer &&
+      this.model.currentPlayer === this.model.player2
+    ) {
+      this.onUserAddChipToColumn(this.model.getBotMove());
+    }
   }
 
   onPlayerStalemate() {

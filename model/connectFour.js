@@ -1,3 +1,4 @@
+import ConnectBot from "./connectBot.js";
 import { Board, Slot } from "./connectFourBoard.js";
 class ConnectFour {
   constructor() {
@@ -5,6 +6,7 @@ class ConnectFour {
     this.board = null;
     this.player1 = null;
     this.player2 = null;
+    this.connectBot = null;
     this.currentPlayer = null;
   }
 
@@ -12,11 +14,16 @@ class ConnectFour {
     this.eventListener = listener;
   }
 
-  startGame(connectToWin, player1, player2) {
+  startGame(connectToWin, player1, player2, playComputer) {
     this.board = new Board(connectToWin);
     this.player1 = player1;
     this.player2 = player2;
+    if (playComputer) {
+      this.connectBot = new ConnectBot(player2.name, player1.name);
+    }
+
     this.currentPlayer = this.selectRandomPlayer();
+    this.eventListener.onGameStarted();
   }
 
   selectRandomPlayer() {
@@ -66,6 +73,10 @@ class ConnectFour {
 
     this.switchCurrentPlayer();
     this.eventListener.onPlayerTurnEnded();
+  }
+
+  getBotMove() {
+    return this.connectBot.generateMove(this.board);
   }
 }
 
