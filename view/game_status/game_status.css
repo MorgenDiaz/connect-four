@@ -1,0 +1,16 @@
+#game_status {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#game_status h2 {
+  font-weight: 600;
+  color: #bd59d4;
+  margin-bottom: 12px;
+}
+
+#play_again_button {
+  visibility: hidden;
+}

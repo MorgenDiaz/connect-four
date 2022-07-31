@@ -1,0 +1,24 @@
+#board {
+  display: flex;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  padding: 8px;
+  background: radial-gradient(
+    circle at center,
+    transparent 0,
+    transparent 55%,
+    black 56%,
+    #4b2354 62%
+  );
+}

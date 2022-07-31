@@ -30,4 +30,6 @@
 
 .checkbox_container label {
   margin-right: 8px;
+  font-weight: 600;
+  color: #4b2354;
 }

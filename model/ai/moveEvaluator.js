@@ -6,7 +6,7 @@ class MoveEvaluator {
 
     let centerCol = Math.floor(board.getNumCols() / 2);
 
-    connections = this.getConnectionsForAllDirections(board, slot, botChip);
+    let moveData = this.getMoveData(board, slot, botChip);
     move.score = moveData.connections;
 
     move.score -= Math.abs(centerCol - slot.col);
