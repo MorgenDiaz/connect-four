@@ -138,25 +138,16 @@ class Board {
     return chips;
   }
 
-  chipCompletesWinningChainHorizontally(slot, chip) {
-    let chain = 1;
-    chain += this.countMatchingChipsToLeft(slot, chip);
-    chain += this.countMatchingChipsToRight(slot, chip);
-    return chain >= this.winningChainCount;
+  countConnectedMatchingChipsHorizontally(slot, chip) {
+    return (
+      this.countMatchingChipsToLeft(slot, chip) +
+      this.countMatchingChipsToRight(slot, chip)
+    );
   }
 
-  countMatchingChipsAbove(startingSlot, chip) {
-    let chips = 0;
-    let slot = startingSlot.copy();
-
-    slot.moveUp();
-
-    while (this.chipAtSlotMatches(slot, chip)) {
-      chips++;
-      slot.moveUp();
-    }
-
-    return chips;
+  chipCompletesWinningChainHorizontally(slot, chip) {
+    let chain = this.countConnectedMatchingChipsHorizontally(slot, chip);
+    return chain + 1 >= this.winningChainCount;
   }
 
   countMatchingChipsBelow(startingSlot, chip) {
@@ -173,9 +164,7 @@ class Board {
   }
 
   chipCompletesWinningChainVertically(slot, chip) {
-    let chain = 1;
-    chain += this.countMatchingChipsAbove(slot, chip);
-    chain += this.countMatchingChipsBelow(slot, chip);
+    let chain = this.countMatchingChipsBelow(slot, chip) + 1;
 
     return chain >= this.winningChainCount;
   }
@@ -208,10 +197,15 @@ class Board {
     return chips;
   }
 
+  countConnectedMatchingChipsDiagonallyRight(slot, chip) {
+    return (
+      this.countMatchingChipsAboveRight(slot, chip) +
+      this.countMatchingChipsBelowLeft(slot, chip)
+    );
+  }
+
   chipCompletesWinningChainDiagonallyRight(slot, chip) {
-    let chain = 1;
-    chain += this.countMatchingChipsAboveRight(slot, chip);
-    chain += this.countMatchingChipsBelowLeft(slot, chip);
+    let chain = this.countConnectedMatchingChipsDiagonallyRight(slot, chip) + 1;
 
     return chain >= this.winningChainCount;
   }
@@ -244,11 +238,15 @@ class Board {
     return chips;
   }
 
-  chipCompletesWinningChainDiagonallyLeft(slot, chip) {
-    let chain = 1;
+  countConnectedMatchingChipsDiagonallyLeft(slot, chip) {
+    return (
+      this.countMatchingChipsAboveLeft(slot, chip) +
+      this.countMatchingChipsBelowRight(slot, chip)
+    );
+  }
 
-    chain += this.countMatchingChipsAboveLeft(slot, chip);
-    chain += this.countMatchingChipsBelowRight(slot, chip);
+  chipCompletesWinningChainDiagonallyLeft(slot, chip) {
+    let chain = this.countConnectedMatchingChipsDiagonallyLeft(slot, chip) + 1;
 
     return chain >= this.winningChainCount;
   }

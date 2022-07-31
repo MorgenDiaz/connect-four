@@ -1,4 +1,4 @@
-import ConnectBot from "./connectBot.js";
+import ConnectBot from "./ai/connectBot.js";
 import { Board, Slot } from "./connectFourBoard.js";
 class ConnectFour {
   constructor() {
