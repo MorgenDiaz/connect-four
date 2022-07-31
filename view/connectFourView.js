@@ -1,4 +1,4 @@
-import GameSetupControlsElement from "./gameSetupControls.js";
+import GameSetupControlsElement from "./game_setup_controls/gameSetupControls.js";
 import GameStatusElement from "./gameStatus.js";
 import BoardElement from "./board.js";
 import ChipElement from "./chip.js";
