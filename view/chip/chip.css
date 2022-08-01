@@ -4,3 +4,11 @@
   border-radius: 50%;
   z-index: -1;
 }
+
+.black {
+  background-color: black;
+}
+
+.blue {
+  background-color: blue;
+}

@@ -1,69 +1,5 @@
 import { Slot, Board } from "./connectFourBoard";
-
-const emptyChip = "empty";
-const redChip = "red";
-const emptyRow = [
-  emptyChip,
-  emptyChip,
-  emptyChip,
-  emptyChip,
-  emptyChip,
-  emptyChip,
-];
-
-const boardWithThreeMatchingChipsHorizontally = [
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  [redChip, redChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-];
-
-const boardWithFourMatchingChipsHorizontally = [
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  emptyRow,
-  [redChip, redChip, redChip, redChip, emptyChip, emptyChip, emptyChip],
-];
-
-const boardWithFourMatchingChipsVertically = [
-  [emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-];
-
-const boardWithFourMatchingChipsDiagonallyRight = [
-  [emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, redChip, emptyChip],
-  [emptyChip, emptyChip, emptyChip, emptyChip, redChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-];
-
-const boardWithFourMatchingChipsDiagonallyLeft = [
-  [emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [redChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, redChip, emptyChip, emptyChip, emptyChip, redChip, emptyChip],
-  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-];
-
-const boardWithFullColumn = [
-  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [redChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, redChip, redChip, emptyChip, emptyChip, redChip, emptyChip],
-  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, redChip, redChip, emptyChip, emptyChip, emptyChip],
-  [emptyChip, emptyChip, redChip, emptyChip, emptyChip, emptyChip, emptyChip],
-];
+import * as TestData from "./testData.js";
 
 function copyArray(a) {
   return JSON.parse(JSON.stringify(a));
@@ -75,7 +11,7 @@ function arraysAreSame(a, b) {
 
 function fillColumn(board, col) {
   for (let i = 0; i < 6; i++) {
-    board.addChipToColumn(col, redChip);
+    board.addChipToColumn(col, TestData.redChip);
   }
 }
 
@@ -118,61 +54,79 @@ test("createBoard initializes all cells to empty", () => {
 test("chipCompletesChain should return false if the board is undefined", () => {
   connectFourBoard.board = undefined;
   const slot = new Slot(0, 0);
-  expect(connectFourBoard.chipCompletesChain(slot, redChip)).toBe(false);
+  expect(connectFourBoard.chipCompletesChain(slot, TestData.redChip)).toBe(
+    false
+  );
 });
 
 test("chipCompletesChain should return false if the board is not an array", () => {
   connectFourBoard.board = 88;
   const slot = new Slot(5, 2);
-  expect(connectFourBoard.chipCompletesChain(slot, redChip)).toBe(false);
+  expect(connectFourBoard.chipCompletesChain(slot, TestData.redChip)).toBe(
+    false
+  );
 });
 
 test("chipCompletesChain should return false if the board has no chips", () => {
-  expect(connectFourBoard.chipCompletesChain(new Slot(), redChip)).toBe(false);
+  expect(
+    connectFourBoard.chipCompletesChain(new Slot(), TestData.redChip)
+  ).toBe(false);
 });
 
 test("chipCompletesChain should not augment board", () => {
-  connectFourBoard.board = copyArray(boardWithFourMatchingChipsHorizontally);
+  connectFourBoard.board = copyArray(
+    TestData.boardWithFourMatchingChipsHorizontally
+  );
 
   const slot = new Slot(5, 2);
-  connectFourBoard.chipCompletesChain(slot, redChip);
+  connectFourBoard.chipCompletesChain(slot, TestData.redChip);
 
   expect(
     arraysAreSame(
       connectFourBoard.board,
-      boardWithFourMatchingChipsHorizontally
+      TestData.boardWithFourMatchingChipsHorizontally
     )
   ).toBe(true);
 });
 
 test("chipCompletesChain should return false if the chain of matching chips is less than winning chain", () => {
-  connectFourBoard.board = boardWithThreeMatchingChipsHorizontally;
+  connectFourBoard.board = TestData.boardWithThreeMatchingChipsHorizontally;
   const slot = new Slot(5, 2);
-  expect(connectFourBoard.chipCompletesChain(slot, redChip)).toBe(false);
+  expect(connectFourBoard.chipCompletesChain(slot, TestData.redChip)).toBe(
+    false
+  );
 });
 
 test("chipCompletesChain should return true if the board has a completed chain horizontally", () => {
-  connectFourBoard.board = boardWithFourMatchingChipsHorizontally;
+  connectFourBoard.board = TestData.boardWithFourMatchingChipsHorizontally;
   const slot = new Slot(5, 2);
-  expect(connectFourBoard.chipCompletesChain(slot, redChip)).toBe(true);
+  expect(connectFourBoard.chipCompletesChain(slot, TestData.redChip)).toBe(
+    true
+  );
 });
 
 test("chipCompletesChain should return true if the board has a completed chain vertically", () => {
-  connectFourBoard.board = boardWithFourMatchingChipsVertically;
+  connectFourBoard.board = TestData.boardWithFourMatchingChipsVertically;
   const slot = new Slot(2, 2);
-  expect(connectFourBoard.chipCompletesChain(slot, redChip)).toBe(true);
+  expect(connectFourBoard.chipCompletesChain(slot, TestData.redChip)).toBe(
+    true
+  );
 });
 
 test("chipCompletesChain should return true if the board has a completed chain diagonally right", () => {
-  connectFourBoard.board = boardWithFourMatchingChipsDiagonallyRight;
+  connectFourBoard.board = TestData.boardWithFourMatchingChipsDiagonallyRight;
   const slot = new Slot(2, 5);
-  expect(connectFourBoard.chipCompletesChain(slot, redChip)).toBe(true);
+  expect(connectFourBoard.chipCompletesChain(slot, TestData.redChip)).toBe(
+    true
+  );
 });
 
 test("chipCompletesChain should return true if the board has a completed chain diagonally left", () => {
-  connectFourBoard.board = boardWithFourMatchingChipsDiagonallyLeft;
+  connectFourBoard.board = TestData.boardWithFourMatchingChipsDiagonallyLeft;
   const slot = new Slot(2, 1);
-  expect(connectFourBoard.chipCompletesChain(slot, redChip)).toBe(true);
+  expect(connectFourBoard.chipCompletesChain(slot, TestData.redChip)).toBe(
+    true
+  );
 });
 
 test("canAddChipToColumn returns true if column is not full", () => {
@@ -196,7 +150,7 @@ test("addChipToColumn does not change next available slot if column is full", ()
 
 test("addChipToColumn changes next available slot to next row up if column is not full", () => {
   let nextAvailableRowForColumn = connectFourBoard.nextAvailableRowForColumn(2);
-  connectFourBoard.addChipToColumn(2, redChip);
+  connectFourBoard.addChipToColumn(2, TestData.redChip);
 
   expect(connectFourBoard.nextAvailableRowForColumn(2)).toBe(
     nextAvailableRowForColumn - 1
@@ -204,16 +158,18 @@ test("addChipToColumn changes next available slot to next row up if column is no
 });
 
 test("addChipToColumn only adds changes one cell", () => {
-  connectFourBoard.addChipToColumn(2, redChip);
-  let filtered = connectFourBoard.board.filter((row) => row.includes(redChip));
+  connectFourBoard.addChipToColumn(2, TestData.redChip);
+  let filtered = connectFourBoard.board.filter((row) =>
+    row.includes(TestData.redChip)
+  );
 
   expect(filtered.length).toBe(1);
 });
 
 test("addChipToColumn changes slot to correct chip if column is not full", () => {
   let nextAvailableRowForColumn = connectFourBoard.nextAvailableRowForColumn(2);
-  connectFourBoard.addChipToColumn(2, redChip);
+  connectFourBoard.addChipToColumn(2, TestData.redChip);
   let slot = new Slot(nextAvailableRowForColumn, 2);
 
-  expect(connectFourBoard.chipAtSlotMatches(slot, redChip)).toBe(true);
+  expect(connectFourBoard.chipAtSlotMatches(slot, TestData.redChip)).toBe(true);
 });
