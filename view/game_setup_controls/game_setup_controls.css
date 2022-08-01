@@ -33,3 +33,9 @@
   font-weight: 600;
   color: #4b2354;
 }
+
+#computer_difficulty_settings {
+  display: none;
+  color: #4b2354;
+  margin-bottom: 20px;
+}

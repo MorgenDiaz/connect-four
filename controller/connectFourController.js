@@ -9,7 +9,7 @@ class ConnectFourController {
   }
 
   onStartGameButtonClicked(player1, player2) {
-    if (player2.name === "ConnectBot") {
+    if (player2.computer) {
       this.isPlayingComputer = true;
     }
     this.model.startGame(

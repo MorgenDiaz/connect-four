@@ -1,7 +1,7 @@
 import GameSetupControlsElement from "./game_setup_controls/gameSetupControls.js";
 import GameStatusElement from "./game_status/gameStatus.js";
 import BoardElement from "./board/board.js";
-import ChipElement from "./chip.js";
+import ChipElement from "./chip/chip.js";
 class ConnectFourView {
   #controller = null;
   #setupControls = null;

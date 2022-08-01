@@ -18,12 +18,30 @@ class ConnectFour {
     this.board = new Board(connectToWin);
     this.player1 = player1;
     this.player2 = player2;
+
     if (playComputer) {
-      this.connectBot = new ConnectBot(player2.name, player1.name);
+      const computerDifficulty = this.getComputerDifficulty(
+        player2.computerDifficulty
+      );
+
+      this.connectBot = new ConnectBot(
+        player2.name,
+        player1.name,
+        computerDifficulty
+      );
     }
 
     this.currentPlayer = this.selectRandomPlayer();
     this.eventListener.onGameStarted();
+  }
+
+  getComputerDifficulty(selection) {
+    switch (selection) {
+      case "easy":
+        return ConnectBot.easy_difficulty;
+      case "medium":
+        return ConnectBot.medium_difficulty;
+    }
   }
 
   selectRandomPlayer() {

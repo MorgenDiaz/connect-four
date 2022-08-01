@@ -55,13 +55,6 @@ main {
   padding: 70px;
 }
 
-.chip {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  z-index: -1;
-}
-
 .black {
   background-color: black;
 }

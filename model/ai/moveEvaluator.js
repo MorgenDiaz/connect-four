@@ -1,19 +1,16 @@
 import { Slot } from "../connectFourBoard.js";
-
 class MoveEvaluator {
-  evaluateMoveAtSlot(board, slot, botChip, opponentChip) {
-    const move = { column: slot.col };
+  #priorityConfig = null;
 
-    let centerCol = Math.floor(board.getNumCols() / 2);
+  constructor(priorityConfig) {
+    this.#priorityConfig = priorityConfig;
+  }
 
-    let moveData = this.getMoveData(board, slot, botChip);
-    move.score = moveData.connections;
+  evaluateMoveAtSlot(board, originalSlot, botChip, opponentChip) {
+    let slot = originalSlot.copy();
+    const move = { column: slot.col, score: 0 };
 
-    move.score -= Math.abs(centerCol - slot.col);
-
-    if (moveData.winningMove) {
-      move.score += 50;
-    }
+    let connections = this.getConnectionsForAllDirections(board, slot, botChip);
 
     let opponentConnections = this.getConnectionsForAllDirections(
       board,
@@ -21,17 +18,17 @@ class MoveEvaluator {
       opponentChip
     );
 
-    if (opponentConnections.largestChain === board.winningChainCount - 1) {
-      move.score += opponentConnections.largestChain + 20;
-    } else {
-      move.score += opponentConnections.largestChain + 6;
-    }
-
-    slot.moveUp();
-
-    if (slot.row > -1 && board.chipCompletesChain(slot, this.opponentName)) {
-      move.score -= 20;
-    }
+    this.factorTotalConnections(move, connections);
+    this.factorWinningMove(move, connections);
+    this.factorDistanceFromCenter(move, board);
+    this.factorOpponentWinningMove(move, opponentConnections, board);
+    this.factorOpponentChain(move, opponentConnections);
+    this.factorMoveWouldCreateWinningOpportunityForOpponent(
+      move,
+      slot,
+      board,
+      opponentChip
+    );
 
     return move;
   }
@@ -66,25 +63,54 @@ class MoveEvaluator {
     };
   }
 
-  getMoveData(board, slot, chip) {
-    let matching = 0;
-
-    let connections = this.getConnectionsForAllDirections(board, slot, chip);
-
-    let winningMove = connections.largestChain === board.winningChainCount - 1;
-
-    matching += connections.horizontalChain;
-    matching += connections.verticalChain;
-    matching += connections.diagonalLeftChain;
-    matching += connections.diagonalRightChain;
-
-    return { connections: matching, winningMove: winningMove };
+  factorDistanceFromCenter(move, board) {
+    if (this.#priorityConfig.considerDistanceFromCenter) {
+      let centerCol = Math.floor(board.getNumCols() / 2);
+      move.score -= Math.abs(centerCol - move.column);
+    }
   }
 
-  slotCompletesChainOf(board, slot, chip) {
-    let connections = this.getConnectionsForAllDirections(board, slot, chip);
+  factorTotalConnections(move, connections) {
+    if (this.#priorityConfig.considerTotalConnectionsToSlot) {
+      move.score += connections.horizontalChain;
+      move.score += connections.verticalChain;
+      move.score += connections.diagonalLeftChain;
+      move.score += connections.diagonalRightChain;
+    }
+  }
 
-    return connections.largestChain;
+  factorWinningMove(move, connections) {
+    let winningMove = connections.largestChain === board.winningChainCount - 1;
+    if (winningMove) {
+      move.score += this.#priorityConfig.winningMoveFactor;
+    }
+  }
+
+  factorOpponentWinningMove(move, connections, board) {
+    if (connections.largestChain === board.winningChainCount - 1) {
+      move.score +=
+        connections.largestChain +
+        this.#priorityConfig.blockOpponentWinningMoveFactor;
+    }
+  }
+
+  factorOpponentChain(move, connections) {
+    move.score +=
+      connections.largestChain + this.#priorityConfig.blockOpponentChainFactor;
+  }
+
+  factorMoveWouldCreateWinningOpportunityForOpponent(
+    move,
+    slot,
+    board,
+    opponentChip
+  ) {
+    slot.moveUp();
+
+    if (slot.row > -1 && board.chipCompletesChain(slot, opponentChip)) {
+      move.score -=
+        this.#priorityConfig.avoidCreatingWinningMoveForOpponentFactor;
+    }
   }
 }
 
